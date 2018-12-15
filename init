@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+if [ -n "$DEBUG_STARTUP" ]; then
+	set -x
+fi
+
+if [ -n "$RUN_UID" ]; then
+	groupmod -g "$RUN_UID" -o migrator
+	usermod -u "$RUN_UID" -o migrator
+fi
+
+if [ -z "$SEQUEL_DATABASE_URL" ]; then
+	echo "No SEQUEL_DATABASE_URL set!" >&2
+	exit 1
+fi
+
+if [ -z "$MIGRATIONS_DIR" ]; then
+	echo "No MIGRATIONS_DIR set!" >&2
+	exit 1
+fi
+
+if ! [ -d "$MIGRATIONS_DIR" ]; then
+	echo "$MIGRATIONS_DIR is not a directory!" >&2
+	exit 1
+fi
+
+if [ -n "$DEBUG_STARTUP" ]; then
+	ls -laR "$MIGRATIONS_DIR"
+fi
+
+su migrator -c "/usr/local/bundle/bin/sequel -m '$MIGRATIONS_DIR' '$SEQUEL_DATABASE_URL'"
+
+echo "Migration complete.  Time for a nap."
+/pause
