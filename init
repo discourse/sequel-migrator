@@ -30,7 +30,7 @@ if [ -n "$DEBUG_STARTUP" ]; then
 	ls -laR "$MIGRATIONS_DIR"
 fi
 
-su migrator -c "/usr/local/bundle/bin/sequel -m '$MIGRATIONS_DIR' '$SEQUEL_DATABASE_URL'"
+su migrator -c "/usr/local/bundle/bin/sequel -E -m '$MIGRATIONS_DIR' '$SEQUEL_DATABASE_URL'"
 
 echo "Migration complete.  Time for a nap."
 /pause
