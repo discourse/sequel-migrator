@@ -6,11 +6,6 @@ if [ -n "$DEBUG_STARTUP" ]; then
 	set -x
 fi
 
-if [ -n "$RUN_UID" ]; then
-	groupmod -g "$RUN_UID" -o migrator
-	usermod -u "$RUN_UID" -o migrator
-fi
-
 if [ -z "$SEQUEL_DATABASE_URL" ]; then
 	echo "No SEQUEL_DATABASE_URL set!" >&2
 	exit 1
@@ -30,7 +25,9 @@ if [ -n "$DEBUG_STARTUP" ]; then
 	ls -laR "$MIGRATIONS_DIR"
 fi
 
-su migrator -c "/usr/local/bundle/bin/sequel -E -m '$MIGRATIONS_DIR' '$SEQUEL_DATABASE_URL'"
+/usr/local/bundle/bin/sequel -E -m "$MIGRATIONS_DIR" "$SEQUEL_DATABASE_URL"
 
-echo "Migration complete.  Time for a nap."
-/pause
+if [ -n "$PAUSE_ON_COMPLETION" ]; then
+	echo "Migration complete.  Time for a nap."
+	/pause
+fi

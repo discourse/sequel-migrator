@@ -1,6 +1,6 @@
 FROM gcr.io/google_containers/pause-amd64:3.0 as pause
 
-FROM ruby:2.5
+FROM ruby:2.6
 
 COPY Gemfile /tmp/
 
@@ -12,9 +12,7 @@ RUN apt-get update \
 	&& apt-get purge -y libpq-dev build-essential libsqlite3-dev \
 	&& apt-get -y --purge autoremove \
 	&& apt-get clean \
-	&& rm -rf /tmp/* /tmp/.bundle /var/lib/apt/lists/* \
-	&& groupadd migrator \
-	&& useradd -M -N -r -s /bin/bash -g migrator migrator
+	&& rm -rf /tmp/* /tmp/.bundle /var/lib/apt/lists/*
 
 COPY --from=pause /pause /
 COPY init /sbin/
