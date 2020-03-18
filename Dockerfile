@@ -5,7 +5,8 @@ FROM ruby:2.6
 COPY Gemfile /tmp/
 
 RUN apt-get update \
-	&& apt-get install -y libpq5 libpq-dev libsqlite3-0 libsqlite3-dev build-essential \
+	&& apt-get install -y libpq5 libsqlite3-0 \
+	&& apt-get install -y libpq-dev libsqlite3-dev build-essential \
 	&& cd /tmp \
 	&& bundle install \
 	&& cd / \
