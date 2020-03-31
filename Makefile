@@ -7,11 +7,11 @@ default: push
 	@printf "${IMAGE}:${TAG} ready\n"
 
 .PHONY: push
-push: build
+push: git-check build
 	docker push ${IMAGE}:${TAG}
 
 .PHONY: build
-build: git-check
+build:
 	docker build --pull ${BUILD_OPTS} -t ${IMAGE}:${TAG} .
 
 .PHONY: git-check
