@@ -4,16 +4,28 @@ FROM ruby:2.6
 
 COPY Gemfile /tmp/
 
-RUN apt-get update \
-	&& apt-get install -y libpq5 libsqlite3-0 \
-	&& apt-get install -y libpq-dev libsqlite3-dev build-essential \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -y install \
+		build-essential \
+		libpq-dev \
+		libpq5 \
+		libsqlite3-0 \
+		libsqlite3-dev \
 	&& cd /tmp \
 	&& bundle install \
 	&& cd / \
-	&& apt-get purge -y libpq-dev build-essential libsqlite3-dev \
-	&& apt-get -y --purge autoremove \
-	&& apt-get clean \
-	&& rm -rf /tmp/* /tmp/.bundle /var/lib/apt/lists/*
+	&& DEBIAN_FRONTEND=noninteractive apt-get -y purge \
+		build-essential \
+		libpq-dev \
+		libsqlite3-dev \
+		linux-libc-dev \
+		python2 \
+	&& DEBIAN_FRONTEND=noninteractive apt-get -y --purge autoremove \
+	&& DEBIAN_FRONTEND=noninteractive apt-get clean \
+	&& ( find /var/lib/apt/lists -mindepth 1 -maxdepth 1 -delete || true ) \
+	&& ( find /var/tmp -mindepth 1 -maxdepth 1 -delete || true ) \
+	&& ( find /tmp -mindepth 1 -maxdepth 1 -delete || true )
 
 COPY --from=pause /pause /
 COPY init /sbin/
