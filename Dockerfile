@@ -1,6 +1,6 @@
 FROM gcr.io/google_containers/pause-amd64:3.0 as pause
 
-FROM ruby:2.6
+FROM ruby:2.6-slim
 
 COPY Gemfile /tmp/
 
