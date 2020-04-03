@@ -25,7 +25,10 @@ if [ -n "$DEBUG_STARTUP" ]; then
 	ls -laR "$MIGRATIONS_DIR"
 fi
 
-/usr/local/bundle/bin/sequel -E -m "$MIGRATIONS_DIR" "$SEQUEL_DATABASE_URL"
+while ! /usr/local/bundle/bin/sequel -E -m "$MIGRATIONS_DIR" "$SEQUEL_DATABASE_URL"; do
+	echo "Migration failed; waiting a little while and trying again" >&2
+	sleep 30
+done
 
 if [ -n "$PAUSE_ON_COMPLETION" ]; then
 	echo "Migration complete.  Time for a nap."
